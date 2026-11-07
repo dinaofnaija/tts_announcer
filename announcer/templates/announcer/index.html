@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <title>TTS Announcer</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 50px;
+        background: #111;
+        color: white;
+      }
+      textarea {
+        width: 80%;
+        height: 100px;
+        font-size: 18px;
+        padding: 10px;
+      }
+      button {
+        padding: 12px 25px;
+        font-size: 18px;
+        margin: 10px;
+        cursor: pointer;
+        background: #00ff88;
+        border: none;
+        border-radius: 8px;
+      }
+      select {
+        padding: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔊 Text to speech Announcer</h1>
+
+    <textarea id="text" placeholder="Type your text...">
+Push yourself, because no one else is going to do it for you. Your code today is your skill tomorrow!</textarea
+    ><br />
+
+    <select id="voice"></select
+    ><br />
+
+    <button onclick="speak()">▶️ Announce</button>
+    <button onclick="stop()">⏹️ Stop</button>
+
+    <script>
+      let voices = [];
+      function loadVoices() {
+        voices = speechSynthesis.getVoices();
+        let select = document.getElementById("voice");
+        select.innerHTML = "";
+        voices.forEach((v, i) => {
+          let opt = document.createElement("option");
+          opt.value = i;
+          opt.textContent = v.name + " (" + v.lang + ")";
+          select.appendChild(opt);
+        });
+      }
+      speechSynthesis.onvoiceschanged = loadVoices;
+      loadVoices();
+
+      function speak() {
+        let text = document.getElementById("text").value;
+        let utter = new SpeechSynthesisUtterance(text);
+        let voiceIndex = document.getElementById("voice").value;
+        if (voices[voiceIndex]) utter.voice = voices[voiceIndex];
+        utter.rate = 1;
+        utter.pitch = 1;
+        speechSynthesis.speak(utter);
+      }
+      function stop() {
+        speechSynthesis.cancel();
+      }
+    </script>
+  </body>
+</html>
